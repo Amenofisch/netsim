@@ -10,7 +10,6 @@ if (!file_exists(DB_FILE)) {
 	try {
 		$db = new SQLite3(DB_FILE);
 		$db->exec("CREATE TABLE user (id integer PRIMARY KEY,name text,password text)");
-		$db->exec("INSERT INTO user (name, password) VALUES ('erinn','$2y$10$n5ajLY.kMZVjLCNsUuPXFO70VUYLoolpQRGl3RCXOBVIaY4/peWXS')");
 		$db->exec("CREATE TABLE category (id integer PRIMARY KEY,name text,orderby integer)");
 		$db->exec("INSERT INTO category (name, orderby) VALUES('Basics', 1),('Spoofs', 2),('Denial of Service', 3),('Attacks', 4)");
 		$db->exec("CREATE TABLE level (id integer PRIMARY KEY,category_id integer,name text,orderby integer,filename text)");
@@ -33,9 +32,13 @@ session_start();
 $userq = $db->prepare("SELECT * FROM user WHERE name = :name");
 
 if (isset($_POST['username']) && isset($_POST['password'])) {
+	if($_POST['username']==="" || $_POST['password']==="")
+            exit("Empty username or password");
+	else {
 	$userq->bindValue(':name', $_POST['username']);
 	$res = $userq->execute();
-
+	}
+	
 	if ($res === false) {
 		$login_error = "Username or password incorrect.";
 	} else {
