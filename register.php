@@ -3,8 +3,11 @@
 require_once 'login.inc.php';
 
 if (isset($_POST['reg_username']) && isset($_POST['reg_password'])) {
-	$userq->bindValue(':name', $_POST['reg_username']);
-	$res = $userq->execute();
+	if($_POST['reg_username']==="" || $_POST['reg_password']==="")
+            exit("Empty username or password");
+	else
+		$userq->bindValue(':name', $_POST['reg_username']);
+		$res = $userq->execute();
 
 	if ($res === false || $res->fetchArray() === false) {
 		$q = $db->prepare("INSERT INTO user (name, password) VALUES (:name, :password)");
